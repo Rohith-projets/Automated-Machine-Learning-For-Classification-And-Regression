@@ -4,3 +4,4 @@ matplotlib
 seaborn
 lazypredict
 scikit-learn
+chardet
