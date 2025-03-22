@@ -15,26 +15,3 @@ streamlit-extras>=0.2.5  # Additional Streamlit utilities
 # Data Processing and Optimization
 numba>=0.57.0  # Accelerates numerical computations
 joblib>=1.3.0  # Parallel processing for ML tasks
-dask>=2023.9.0  # Handles large datasets efficiently
-vaex>=4.18.0  # High-performance DataFrame library for big data
-
-# Visualization Enhancements
-plotly>=5.16.0  # Interactive plots
-altair>=5.0.0  # Declarative visualization library
-bokeh>=3.3.0  # Interactive charts
-folium>=0.14.0  # Geospatial visualizations
-
-# Model Optimization and Explainability
-xgboost>=2.0.0  # Gradient boosting for classification/regression
-lightgbm>=4.0.0  # Fast gradient boosting framework
-catboost>=1.2.0  # Gradient boosting with categorical support
-shap>=0.42.1  # Model explainability
-
-# Performance Monitoring
-memory-profiler>=0.61.0  # Monitor memory usage
-line-profiler>=4.0.2  # Profile line-by-line performance
-
-# Other Utilities
-pyarrow>=13.0.0  # Efficient data serialization
-fastparquet>=2023.4.0  # Parquet file support
-tqdm>=4.66.0  # Progress bars for long-running tasks
