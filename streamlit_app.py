@@ -76,7 +76,6 @@ def make_inference(target, type, trainSize, dataframe):
                 st.session_state['regression']=False
             
 
-
 # Streamlit interface
 upload_file = st.sidebar.file_uploader("Upload file of type csv", type=["csv"])
 if upload_file:
@@ -93,3 +92,9 @@ if upload_file:
         # Allow user to select the inference type
         type = st.sidebar.selectbox("Infer type", ["classification", "regression"])
 
+        # Checkbox to confirm settings
+        if st.sidebar.checkbox("Fix the above settings"):
+            if target and train and type:
+                make_inference(target, type, train, uploaded_dataframe)
+            else:
+                st.sidebar.info("Target column, proportion for slider, and infer type must be given")
