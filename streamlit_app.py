@@ -6,7 +6,10 @@ import lazypredict
 import chardet
 from sklearn.model_selection import train_test_split
 from lazypredict.Supervised import LazyClassifier, LazyRegressor
-
+sessionVariables=['classification','regression']
+for i in st.session_state:
+    if i not in st.sessio_state:
+        st.session_state[i]=False
 
 def detect_encoding(upload_file):
     # Use chardet to detect encoding and read CSV correctly with the detected encoding
@@ -24,27 +27,54 @@ def detect_encoding(upload_file):
 
 def make_inference(target, type, trainSize, dataframe):
     if type == "classification":
-        st.header("You are performing Classification", divider='green')
-        try:
-            x = dataframe.drop(target, axis=1)
-            y = dataframe[target]
-            xTrain, xTest, yTrain, yTest = train_test_split(x, y, train_size=trainSize, random_state=42)
-            clf = LazyClassifier(verbose=0, ignore_warnings=True, custom_metric=None)
-            models, predictions = clf.fit(xTrain, xTest, yTrain, yTest)
-            st.dataframe(models)
-        except Exception as e:
-            st.error(f"Error during classification: {e}")
+        if st.session_state['classification']:
+            st.header("You are performing Classification", divider='green')
+            try:
+                x = dataframe.drop(target, axis=1)
+                y = dataframe[target]
+                xTrain, xTest, yTrain, yTest = train_test_split(x, y, train_size=trainSize, random_state=42)
+                clf = LazyClassifier(verbose=0, ignore_warnings=True, custom_metric=None)
+                models, predictions = clf.fit(xTrain, xTest, yTrain, yTest)
+                st.session_state['classification']=True
+                st.session_state['models_cls']=models
+                st.session_state['cls_predictions']=predictions
+                st.dataframe(models)
+                st.subheader("Predictions are like this",divider='blue')
+                st.datframe(predictions)
+            except Exception as e:
+                st.error(f"Error during classification: {e}")
+                st.header("Results",divider='blue')
+                st.dataframe(st.session_state['models_cls'])
+                st.header('Predictions',divider='blue')
+                st.dataframe(st.session_state['cls_predictions'])
+                if st.button("Recompute",use_container_width=True,type='primary'):
+                    st.session_state['classification']=False
+        else:
+            st.header("You Already Performed Classification",divider='blue')
     elif type == "regression":
-        st.header("You are performing Regression", divider='red')
-        try:
-            x = dataframe.drop(target, axis=1)
-            y = dataframe[target]
-            xTrain, xTest, yTrain, yTest = train_test_split(x, y, train_size=trainSize, random_state=42)
-            reg = LazyRegressor(verbose=0, ignore_warnings=True, custom_metric=None)
-            models, predictions = reg.fit(xTrain, xTest, yTrain, yTest)
-            st.dataframe(models)
-        except Exception as e:
-            st.error(f"Error during regression: {e}")
+        if st.session_state['regression']:
+            st.header("You are performing Regression", divider='red')
+            try:
+                x = dataframe.drop(target, axis=1)
+                y = dataframe[target]
+                xTrain, xTest, yTrain, yTest = train_test_split(x, y, train_size=trainSize, random_state=42)
+                reg = LazyRegressor(verbose=0, ignore_warnings=True, custom_metric=None)
+                models, predictions = reg.fit(xTrain, xTest, yTrain, yTest)
+
+                st.session_state['regression']=True
+                st.session_state['models_reg']=models
+                st.session_state['predictions']=predictions
+                st.dataframe(models)
+                st.header("Predictions",divider='blue')
+                st.dataframe(predictions)
+            except Exception as e:
+                st.error(f"Error during regression: {e}")
+        else:
+            st.dataframe(st.session_state['models_reg'])
+            st.dataframe(st.session_state['predictions'])
+            if st.button("ReCompute",use_container_width=True,type='primary'):
+                st.session_state['regression']=False
+            
 
 
 # Streamlit interface
@@ -63,9 +93,3 @@ if upload_file:
         # Allow user to select the inference type
         type = st.sidebar.selectbox("Infer type", ["classification", "regression"])
 
-        # Checkbox to confirm settings
-        if st.checkbox("Fix the above settings"):
-            if target and train and type:
-                make_inference(target, type, train, uploaded_dataframe)
-            else:
-                st.sidebar.info("Target column, proportion for slider, and infer type must be given")
