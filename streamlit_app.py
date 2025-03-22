@@ -87,7 +87,7 @@ def make_inference(target, type, train_size, dataframe):
 
 
 # Streamlit interface
-st.title("LazyPredict Model Inference Tool")
+st.title("Model Inference Tool")
 
 # Sidebar for configuration
 upload_file = st.sidebar.file_uploader("Upload a CSV file", type=["csv"])
