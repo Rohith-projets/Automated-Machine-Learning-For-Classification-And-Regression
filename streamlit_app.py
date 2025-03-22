@@ -27,8 +27,6 @@ def make_inference(target, type, train_size, dataframe):
         if st.session_state.get('classification', False):
             st.header("You Already Performed Classification", divider='blue')
             st.dataframe(st.session_state['models_cls'])
-            st.header("Predictions", divider='blue')
-            st.dataframe(st.session_state['cls_predictions'])
 
             if st.button("Recompute Classification", use_container_width=True, type='primary'):
                 st.session_state['classification'] = False
@@ -59,13 +57,10 @@ def make_inference(target, type, train_size, dataframe):
                 # Store results in session state
                 st.session_state['classification'] = True
                 st.session_state['models_cls'] = models
-                st.session_state['cls_predictions'] = predictions
 
                 # Display results
                 st.subheader("Classification Results", divider='blue')
                 st.dataframe(models)
-                st.subheader("Predictions", divider='blue')
-                st.dataframe(predictions)
 
                 # Clear progress text
                 status_text.text("Training Complete!")
@@ -77,8 +72,6 @@ def make_inference(target, type, train_size, dataframe):
         if st.session_state.get('regression', False):
             st.header("You Already Performed Regression", divider='blue')
             st.dataframe(st.session_state['models_reg'])
-            st.header("Predictions", divider='blue')
-            st.dataframe(st.session_state['reg_predictions'])
 
             if st.button("Recompute Regression", use_container_width=True, type='primary'):
                 st.session_state['regression'] = False
@@ -109,13 +102,10 @@ def make_inference(target, type, train_size, dataframe):
                 # Store results in session state
                 st.session_state['regression'] = True
                 st.session_state['models_reg'] = models
-                st.session_state['reg_predictions'] = predictions
 
                 # Display results
                 st.subheader("Regression Results", divider='blue')
                 st.dataframe(models)
-                st.subheader("Predictions", divider='blue')
-                st.dataframe(predictions)
 
                 # Clear progress text
                 status_text.text("Training Complete!")
