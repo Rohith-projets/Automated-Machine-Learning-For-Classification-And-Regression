@@ -3,6 +3,8 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 from lazypredict.Supervised import LazyClassifier, LazyRegressor
 import chardet
+from tqdm import tqdm
+import time
 
 
 # Function to detect file encoding and load the CSV
@@ -37,8 +39,22 @@ def make_inference(target, type, train_size, dataframe):
                 y = dataframe[target]
                 x_train, x_test, y_train, y_test = train_test_split(x, y, train_size=train_size, random_state=42)
 
+                # Add a progress bar
+                progress_bar = st.progress(0)
+                status_text = st.empty()
+
                 clf = LazyClassifier(verbose=0, ignore_warnings=True, custom_metric=None)
-                models, predictions = clf.fit(x_train, x_test, y_train, y_test)
+
+                # Simulate progress with tqdm-like behavior
+                models, predictions = None, None
+                for i in tqdm(range(100), desc="Training Models"):
+                    # Update progress bar
+                    progress_bar.progress(i + 1)
+                    status_text.text(f"Training Models: {i + 1}% Complete")
+                    # Simulate work being done (e.g., fitting the model)
+                    if i == 0:
+                        models, predictions = clf.fit(x_train, x_test, y_train, y_test)
+                    time.sleep(0.01)  # Simulate delay
 
                 # Store results in session state
                 st.session_state['classification'] = True
@@ -50,6 +66,10 @@ def make_inference(target, type, train_size, dataframe):
                 st.dataframe(models)
                 st.subheader("Predictions", divider='blue')
                 st.dataframe(predictions)
+
+                # Clear progress text
+                status_text.text("Training Complete!")
+
             except Exception as e:
                 st.error(f"Error during classification: {e}")
 
@@ -69,8 +89,22 @@ def make_inference(target, type, train_size, dataframe):
                 y = dataframe[target]
                 x_train, x_test, y_train, y_test = train_test_split(x, y, train_size=train_size, random_state=42)
 
+                # Add a progress bar
+                progress_bar = st.progress(0)
+                status_text = st.empty()
+
                 reg = LazyRegressor(verbose=0, ignore_warnings=True, custom_metric=None)
-                models, predictions = reg.fit(x_train, x_test, y_train, y_test)
+
+                # Simulate progress with tqdm-like behavior
+                models, predictions = None, None
+                for i in tqdm(range(100), desc="Training Models"):
+                    # Update progress bar
+                    progress_bar.progress(i + 1)
+                    status_text.text(f"Training Models: {i + 1}% Complete")
+                    # Simulate work being done (e.g., fitting the model)
+                    if i == 0:
+                        models, predictions = reg.fit(x_train, x_test, y_train, y_test)
+                    time.sleep(0.01)  # Simulate delay
 
                 # Store results in session state
                 st.session_state['regression'] = True
@@ -82,6 +116,10 @@ def make_inference(target, type, train_size, dataframe):
                 st.dataframe(models)
                 st.subheader("Predictions", divider='blue')
                 st.dataframe(predictions)
+
+                # Clear progress text
+                status_text.text("Training Complete!")
+
             except Exception as e:
                 st.error(f"Error during regression: {e}")
 
@@ -97,7 +135,10 @@ if upload_file:
         st.sidebar.header("Configuration", divider='blue')
 
         # Target column selection
-        target = st.sidebar.selectbox("Select the target column", options=uploaded_dataframe.columns)
+        target = st.sidebar.selectbox(
+            "Select the target column",
+            options=uploaded_dataframe.columns
+        )
 
         # Training dataset proportion
         train_size = st.sidebar.slider(
@@ -109,7 +150,10 @@ if upload_file:
         )
 
         # Infer type (classification or regression)
-        infer_type = st.sidebar.selectbox("Inference Type", ["classification", "regression"])
+        infer_type = st.sidebar.selectbox(
+            "Inference Type",
+            ["classification", "regression"]
+        )
 
         # Checkbox to confirm settings
         if st.sidebar.checkbox("Confirm Settings"):
